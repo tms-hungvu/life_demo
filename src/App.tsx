@@ -13,7 +13,7 @@ const App = () => {
   const initializeLiff = async () => {
     try {
       await liff.init({
-        liffId: '2006286965-zwb6bj19',
+        liffId: '2006290964-ZKMWMp2R',
         withLoginOnExternalBrowser: true,
       });
       setLiffObject(liff);
