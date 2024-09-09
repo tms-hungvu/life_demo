@@ -1,9 +1,26 @@
-import liff, { Liff } from "@line/liff";
-import { useEffect, useState } from "react";
 
-const App = () => {
-  const [message, setMessage] = useState("");
+
+
+
+
+
+import { useState, useEffect } from "react";
+import liff, { Liff } from "@line/liff";
+import { SendMessagesParams } from "@liff/send-messages";
+
+type MessageType = "text" | "image";
+
+interface Message {
+  type: MessageType;
+  content: string;
+}
+
+function App() {
+  const [messages, setMessages] = useState<Message[]>([]);
+  const [currentMessage, setCurrentMessage] = useState("");
+  const [currentType, setCurrentType] = useState<MessageType>("text");
   const [liffObject, setLiffObject] = useState<Liff>();
+  const [liffError, setLiffError] = useState("");
 
   useEffect(() => {
     initializeLiff();
@@ -17,46 +34,56 @@ const App = () => {
         withLoginOnExternalBrowser: true,
       });
       setLiffObject(liff);
-      
-      liff
-      .getProfile()
-      .then((profile) => {
-        console.log("get profile name is : ", profile.displayName)
-      })
-      .catch(() => {
-        console.log("get profile failed");
-      });
     } catch (error) {
-      console.log(error);
+      setLiffError(error instanceof Error ? error.message : String(error));
+    }
+  };
+
+  // メッセージ追加処理
+  const addMessage = () => {
+    if (currentMessage) {
+      setMessages([
+        ...messages,
+        { type: currentType, content: currentMessage },
+      ]);
+      setCurrentMessage("");
     }
   };
 
   // シェアターゲットピッカーによるメッセージシェア
-  const shareMessage = async () => {
-    if (!liff.isLoggedIn()) {
-      liff.login(); // If not logged in, force login
-    }
-
+  const shareMessages = async () => {
     if (!liffObject) {
-      console.log("LIFF is not initialized");
+      alert("LIFF is not initialized");
       return;
     }
-    
 
     try {
-      await liffObject.shareTargetPicker([
-        {
-          type: "text",
-          text: message,
-        },
-      ]);
+      const liffMessages: SendMessagesParams = messages.map((msg) => {
+        if (msg.type === "text") {
+          return { type: "text", text: msg.content };
+        } else {
+          return {
+            type: "image",
+            originalContentUrl: msg.content,
+            previewImageUrl: msg.content,
+          };
+        }
+      });
+
+      await liffObject.shareTargetPicker(liffMessages, {
+        isMultiple: true,
+      });
     } catch (error) {
-      console.log("error shareTargetPicker : ", error);
+      alert("Failed to share: " + error);
     }
-
-
   };
 
+  // エラー表示
+  if (liffError) {
+    return <div>Error: {liffError}</div>;
+  }
+
+  // 初期化待ち表示
   if (!liffObject) {
     return <div>Loading...</div>;
   }
@@ -64,15 +91,34 @@ const App = () => {
   return (
     <div>
       <h1>シェアターゲットピッカー デモ</h1>
-      <input
-        type="text"
-        value={message}
-        onChange={(e) => setMessage(e.target.value)}
-        placeholder="メッセージを入力"
-      />
-      <button onClick={shareMessage}>メッセージをシェアする</button>
+      <div>
+        <select
+          value={currentType}
+          onChange={(e) => setCurrentType(e.target.value as MessageType)}
+        >
+          <option value="text">テキスト</option>
+          <option value="image">画像</option>
+        </select>
+        <input
+          type="text"
+          value={currentMessage}
+          onChange={(e) => setCurrentMessage(e.target.value)}
+          placeholder={
+            currentType === "text" ? "メッセージを入力" : "画像URLを入力"
+          }
+        />
+        <button onClick={addMessage}>メッセージを追加</button>
+      </div>
+      <ul>
+        {messages.map((msg, index) => (
+          <li key={index}>
+            {msg.type}: {msg.content}
+          </li>
+        ))}
+      </ul>
+      <button onClick={shareMessages}>メッセージをシェア</button>
     </div>
   );
-};
+}
 
 export default App;
