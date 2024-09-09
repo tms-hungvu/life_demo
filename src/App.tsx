@@ -17,11 +17,25 @@ const App = () => {
         withLoginOnExternalBrowser: true,
       });
       setLiffObject(liff);
-      
+
       liff
       .getProfile()
-      .then((profile) => {
+      .then(async (profile) => {
         console.log("get profile", profile.displayName)
+
+
+        try {
+          await liff.shareTargetPicker([
+            {
+              type: "text",
+              text: 'demo 123',
+            },
+          ]);
+        } catch (error) {
+          console.log("error shareTargetPicker : ", error);
+        }
+
+        
       })
       .catch(() => {
         console.log("get profile failed");
@@ -46,7 +60,7 @@ const App = () => {
         },
       ]);
     } catch (error) {
-      console.log(error);
+      console.log("error shareTargetPicker : ", error);
     }
   };
 
