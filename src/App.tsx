@@ -7,7 +7,7 @@ function App() {
   useEffect(() => {
     liff
       .init({
-        liffId: import.meta.env.VITE_LIFF_ID,
+        liffId: '2006286965-zwb6bj19',
         withLoginOnExternalBrowser: true,
       })
       .then(() => {
