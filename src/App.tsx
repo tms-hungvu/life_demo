@@ -13,7 +13,7 @@ const App = () => {
   const initializeLiff = async () => {
     try {
       await liff.init({
-        liffId: '2003228422-o4GZzLYl',//  2006286965-zwb6bj19
+        liffId: '2006286965-zwb6bj19',
         withLoginOnExternalBrowser: true,
       });
       setLiffObject(liff);
@@ -43,30 +43,18 @@ const App = () => {
     }
     
 
-    // try {
-    //   await liffObject.shareTargetPicker([
-    //     {
-    //       type: "text",
-    //       text: message,
-    //     },
-    //   ]);
-    // } catch (error) {
-    //   console.log("error shareTargetPicker : ", error);
-    // }
-
-    if (liff.isApiAvailable('shareTargetPicker')) {
-      liff.shareTargetPicker([
+    try {
+      await liffObject.shareTargetPicker([
         {
           type: "text",
-          text: "Hello, World!"
-        }
-      ])
-        .then(() => {
-          console.log("ShareTargetPicker was launched")
-        }).catch(function(res) {
-          console.log("Failed to launch ShareTargetPicker")
-        })
+          text: message,
+        },
+      ]);
+    } catch (error) {
+      console.log("error shareTargetPicker : ", error);
     }
+
+
   };
 
   if (!liffObject) {
