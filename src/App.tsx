@@ -87,11 +87,69 @@ function App() {
     try {
       await liffObject.shareTargetPicker([
         {
-          "type": "sticker",
-          "packageId": "446",
-          "stickerId": "1988"
+          type: "sticker",
+          packageId: "446",
+          stickerId: "1988"
         }
-      ]);
+      ], {
+        isMultiple: true,
+      });
+    } catch (error) {
+      alert('error to share messages:' + error);
+    }
+  }
+
+  const handleSendLocation = async () => {
+    if (!liffObject) {
+      alert("LIFF is not initialized");
+      return;
+    }
+
+    try {
+      await liffObject.shareTargetPicker([
+        {
+          type: "location",
+          title: "my location",
+          address: "1-3 Kioicho, Chiyoda-ku, Tokyo, 102-8282, Japan",
+          latitude: 35.67966,
+          longitude: 139.73669
+        }
+      ], {
+        isMultiple: true,
+      });
+    } catch (error) {
+      alert('error to share messages:' + error);
+    }
+  }
+
+
+  const handleSendTextAndEmoij = async () => {
+    if (!liffObject) {
+      alert("LIFF is not initialized");
+      return;
+    }
+
+    try {
+      await liffObject.shareTargetPicker([
+        {
+          type: "text",
+          text: "$ LINE emoji $",
+          emojis: [
+            {
+              index: 0,
+              productId: "5ac1bfd5040ab15980c9b435",
+              emojiId: "001"
+            },
+            {
+              index: 13,
+              productId: "5ac1bfd5040ab15980c9b435",
+              emojiId: "002"
+            }
+          ]
+      }
+      ], {
+        isMultiple: true,
+      });
     } catch (error) {
       alert('error to share messages:' + error);
     }
@@ -136,7 +194,9 @@ function App() {
         ))}
       </ul>
       <button onClick={shareMessages}>メッセージをシェア</button> <br/>
-      <button onClick={handleSendSticker}>Send sticker</button>
+      <button onClick={handleSendSticker}>Send sticker</button> <br/>
+      <button onClick={handleSendLocation}>Send location</button> <br/>
+      <button onClick={handleSendTextAndEmoij}>Send text and emoji</button> <br/>
     </div>
   );
 }
