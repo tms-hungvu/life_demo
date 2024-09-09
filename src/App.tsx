@@ -17,6 +17,15 @@ const App = () => {
         withLoginOnExternalBrowser: true,
       });
       setLiffObject(liff);
+      
+      liff
+      .getProfile()
+      .then((profile) => {
+        console.log("get profile", profile.displayName)
+      })
+      .catch(() => {
+        console.log("get profile failed");
+      });
     } catch (error) {
       console.log(error);
     }
