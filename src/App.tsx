@@ -73,10 +73,29 @@ function App() {
       await liffObject.shareTargetPicker(liffMessages, {
         isMultiple: true,
       });
+     
     } catch (error) {
       alert("Failed to share: " + error);
     }
   };
+  const handleSendSticker = async () => {
+    if (!liffObject) {
+      alert("LIFF is not initialized");
+      return;
+    }
+
+    try {
+      await liffObject.shareTargetPicker([
+        {
+          "type": "sticker",
+          "packageId": "446",
+          "stickerId": "1988"
+        }
+      ]);
+    } catch (error) {
+      alert('error to share messages:' + error);
+    }
+  }
 
   // エラー表示
   if (liffError) {
@@ -116,7 +135,8 @@ function App() {
           </li>
         ))}
       </ul>
-      <button onClick={shareMessages}>メッセージをシェア</button>
+      <button onClick={shareMessages}>メッセージをシェア</button> <br/>
+      <button onClick={handleSendSticker}>Send sticker</button>
     </div>
   );
 }
