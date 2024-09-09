@@ -33,10 +33,15 @@ const App = () => {
 
   // シェアターゲットピッカーによるメッセージシェア
   const shareMessage = async () => {
+    if (!liff.isLoggedIn()) {
+      liff.login(); // If not logged in, force login
+    }
+
     if (!liffObject) {
       console.log("LIFF is not initialized");
       return;
     }
+    
 
     try {
       await liffObject.shareTargetPicker([
